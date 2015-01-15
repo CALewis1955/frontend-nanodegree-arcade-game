@@ -34,10 +34,52 @@ Enemy.prototype.render = function() {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
+var Player = function() {
+    this.sprite = 'images/char-boy.png';
+}
+var screenWidth = 505;
+var screenHeight = 606;
+Player.prototype.x = screenWidth/2 -50;
+Player.prototype.y = screenHeight - 200;
+
+// Draw method for player
+Player.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+}
+
+// Update method for player
+Player.prototype.update = function(dt) {
+    // You should multiply any movement by the dt parameter
+    // which will ensure the game runs at the same speed for
+    // all computers
+    if (this.x < 500) {
+        this.x = this.x;
+    } else {
+        this.x = 0;
+        this.x = this.x;
+    }
+}
+
+// Player handleInput() to move player
+var step = 44;
+Player.prototype.handleInput = function(dir) {
+    if (dir == 'up' && (this.y - step) > 0) {
+        this.y = this.y - step;
+    } 
+    if (dir == 'down' && (this.y + step) < screenHeight) {
+        this.y = this.y + step;
+    }
+    if (dir == 'left') {
+        this.x = this.x - step;
+    }
+    if (dir == 'right') {
+        this.x = this.x + step;
+    }
+}
 
 
 // Now instantiate your objects.
-
+// Place all enemy objects in an array called allEnemies
 var allEnemies = [];
 var numEnemies = 4;
 for (var i = 0; i < numEnemies; i++) {
@@ -58,14 +100,9 @@ for (var i = 0; i < numEnemies; i++) {
     }
     allEnemies[i].speed = Math.random() * speedEnhancer;
 }
-// Place all enemy objects in an array called allEnemies
-/*
-var allEnemies = [];
-allEnemies.push(chris);
-allEnemies.push(kim);
-allEnemies.push(jack); 
-*/
+
 // Place the player object in a variable called player
+var player = new Player();
 
 
 
