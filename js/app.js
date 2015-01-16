@@ -39,12 +39,25 @@ var Player = function() {
 }
 var screenWidth = 505;
 var screenHeight = 606;
-Player.prototype.x = screenWidth/2 -50;
-Player.prototype.y = screenHeight - 200;
+var startingX = screenWidth/2 -50;
+var startingY = screenHeight - 200;
+Player.prototype.x = startingX;
+Player.prototype.y = startingY;
 
 // Draw method for player
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+}
+
+Player.prototype.checkCollisions = function() {
+    var len = allEnemies.length;
+    for (var i = 0; i < len; i++) {
+        if ((this.x > allEnemies[i].x) && (this.x <= allEnemies[i].x + 50)
+            && (this.y > allEnemies[i].y) && (this.y <= allEnemies[i].y + 50)) {
+            this.x = startingX;
+            this.y = startingY;
+        }
+    }
 }
 
 // Update method for player
@@ -52,7 +65,8 @@ Player.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers
-    if (this.x < 500) {
+    this.checkCollisions();
+    if (this.x < 500 && this.x > 0) {
         this.x = this.x;
     } else {
         this.x = 0;
@@ -66,7 +80,7 @@ Player.prototype.handleInput = function(dir) {
     if (dir == 'up' && (this.y - step) > 0) {
         this.y = this.y - step;
     } 
-    if (dir == 'down' && (this.y + step) < screenHeight) {
+    if (dir == 'down' && (this.y + step) < (screenHeight - 200)) {
         this.y = this.y + step;
     }
     if (dir == 'left') {
