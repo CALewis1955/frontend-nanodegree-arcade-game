@@ -17,11 +17,11 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers
-    if (this.x < 500) {
-        this.x = this.x + this.speed;
+    if ((this.x < screenWidth) && (this.x > 0)) {
+        this.x = this.x + (this.speed * (1 + dt));
     } else {
         this.x = 0;
-        this.x = this.x + this.speed;
+        this.x = this.x + (this.speed * (1 + dt));
     }
 }
 
@@ -53,12 +53,12 @@ Player.prototype.checkCollisions = function() {
     var len = allEnemies.length;
     for (var i = 0; i < len; i++) {
         if ((this.x > allEnemies[i].x) && (this.x <= allEnemies[i].x + 50)
-            && (this.y > allEnemies[i].y) && (this.y <= allEnemies[i].y + 50)) {
-            this.x = startingX;
-            this.y = startingY;
+            && (this.y > allEnemies[i].y - 50) && (this.y <= allEnemies[i].y + 50)) {
+                this.x = startingX;           
+              this.y = startingY;
+           }
         }
     }
-}
 
 // Update method for player
 Player.prototype.update = function(dt) {
@@ -66,21 +66,29 @@ Player.prototype.update = function(dt) {
     // which will ensure the game runs at the same speed for
     // all computers
     this.checkCollisions();
-    if (this.x < 500 && this.x > 0) {
+    if (this.x < screenWidth && this.x > 0) {
         this.x = this.x;
+    } else if (this.x < 0) {
+        this.x = screenWidth;
     } else {
         this.x = 0;
         this.x = this.x;
+    }
+    if (this.y < 0) {
+        this.y = 0;
+    }
+    if (this.y > startingY) {
+        this.y = startingY;
     }
 }
 
 // Player handleInput() to move player
 var step = 44;
 Player.prototype.handleInput = function(dir) {
-    if (dir == 'up' && (this.y - step) > 0) {
+    if (dir == 'up') {   
         this.y = this.y - step;
     } 
-    if (dir == 'down' && (this.y + step) < (screenHeight - 200)) {
+    if (dir == 'down') {
         this.y = this.y + step;
     }
     if (dir == 'left') {
@@ -96,28 +104,29 @@ Player.prototype.handleInput = function(dir) {
 // Place all enemy objects in an array called allEnemies
 var allEnemies = [];
 var numEnemies = 4;
-for (var i = 0; i < numEnemies; i++) {
-    var yOffset = 75;
-    var xOffset = 50;
-    var speedEnhancer = 2.5;
-    var brickEdge = 175;
-    allEnemies[i] = new Enemy();
-    if (i >= 1) {
-        if (allEnemies[i - 1].y > brickEdge) {
-            allEnemies[i].y = yOffset;
-            allEnemies[i].x = allEnemies[i - 1].x + xOffset; 
+var speedEnhancer = 2.0;
+var setEnemies = function() {
+    for (var i = 0; i < numEnemies; i++) {
+        var yOffset = 75;
+        var xOffset = 50;
+        var brickEdge = 175;
+        allEnemies[i] = new Enemy();
+        if (i >= 1) {
+            if (allEnemies[i - 1].y > brickEdge) {
+                allEnemies[i].y = yOffset;
+                allEnemies[i].x = allEnemies[i - 1].x + xOffset; 
+            } else {
+                allEnemies[i].y = allEnemies[i - 1].y + yOffset;
+            }
         } else {
-            allEnemies[i].y = allEnemies[i - 1].y + yOffset;
+            allEnemies[i].y = yOffset;
         }
-    } else {
-        allEnemies[i].y = yOffset;
-    }
     allEnemies[i].speed = Math.random() * speedEnhancer;
+    }
 }
-
 // Place the player object in a variable called player
 var player = new Player();
-
+setEnemies();
 
 
 // This listens for key presses and sends the keys to your

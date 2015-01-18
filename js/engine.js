@@ -24,6 +24,7 @@ var Engine = (function(global) {
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
         lastTime;
+        score = 0;
 
     canvas.width = 505;
     canvas.height = 606;
@@ -47,6 +48,7 @@ var Engine = (function(global) {
          */
         update(dt);
         render();
+        updateScore();
 
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
@@ -69,6 +71,19 @@ var Engine = (function(global) {
         main();
     }
 
+    // Display score
+    function updateScore() {
+        ctx.font = "30px Verdana";
+        ctx.fillText("SCORE  " + score, 300, 85);
+        if (player.y <= 75) {
+            score += 100;
+            player.y = startingY;
+            numEnemies += 1;
+            speedEnhancer += .5;
+            setEnemies();
+
+        }
+    }
     /* This function is called by main (our game loop) and itself calls all
      * of the functions which may need to update entity's data. Based on how
      * you implement your collision detection (when two entities occupy the
@@ -80,8 +95,13 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+     //    checkCollisions();   
     }
+
+
+
+
+
 
     /* This is called by the update function  and loops through all of the
      * objects within your allEnemies array as defined in app.js and calls
